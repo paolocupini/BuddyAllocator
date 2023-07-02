@@ -2,10 +2,11 @@ CC=gcc
 CCOPTS=--std=gnu99 -Wall -D_LIST_DEBUG_ 
 AR=ar
 
-OBJS=bitmap.o\
+OBJS=bit_map.o\
      buddy_allocator.o
 
-HEADERS=bitmap.h buddy_allocator.h
+HEADERS=bit_map.h buddy_allocator.h
+
 LIBS=libbuddy.a
 
 BINS= buddy_allocator_test

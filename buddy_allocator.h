@@ -1,5 +1,7 @@
 #pragma once
 #include "bit_map.h"
+#define MAX_LEVELS 16
+
 
 typedef struct {
     
@@ -15,8 +17,9 @@ int BuddyAllocator_init(
     int num_levels,
     char *buffer,
     int buffer_size,
-    int min_bucket_size;
-
+    char *bit_buf,
+    int bit_buf_size,
+    int min_bucket_size
 );
 
 //allocates memory
