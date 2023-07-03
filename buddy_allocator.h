@@ -27,3 +27,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size);
 
 //releases allocated memory
 void BuddyAllocator_free(BuddyAllocator* alloc, void* mem);
+
+void Set_parent(BitMap *bitmap, int status, int numBit);
+
+void Set_child(BitMap *bitmap, int status, int numBit);

@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
         printf("error initializing buddy_allocator\n");
         return 0;
     }
+      void *p1 = BuddyAllocator_malloc(&alloc, 4);
 
 
     //! TO DO: try some allocation 
