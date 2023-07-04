@@ -16,7 +16,12 @@ int main(int argc, char** argv) {
     int levels=BUDDY_LEVELS;
     int min_bucket=buf_size>>(levels);
     char buffer[BUFFER_SIZE];
+    
     //! TO DO: check size of the request and handle two different scenarios
+    //!TEST DA IMPLEMENTARE: 
+    //! 1. small request (< 1/4 page size) -> buddy allocator
+    //! 2. large request (> 1/4 page size) -> mmap
+    //! 3. errori: blocco troppo grande, memoria terminata ecc
     
     printf("init...\n");
 
@@ -36,6 +41,7 @@ int main(int argc, char** argv) {
         return 0;
     }
       void *p1 = BuddyAllocator_malloc(&alloc, 4);
+      BuddyAllocator_free(&alloc,p1);
 
 
     //! TO DO: try some allocation 

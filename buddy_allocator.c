@@ -96,13 +96,13 @@ return 1;
 
 //imposto stato genitore
 void Set_parent(BitMap *bitmap, int status, int numBit){
-    BitMap_setBit(bitmap,status,numBit);
+    BitMap_setBit(bitmap,numBit,status);
     if (numBit != 0) Set_parent(bitmap,status,parentIdx(numBit));
 }
 //setto child'status
 void Set_child(BitMap *bitmap, int status, int numBit){
     if(numBit<bitmap->num_bits){
-        BitMap_setBit(bitmap,status,numBit);
+        BitMap_setBit(bitmap,numBit,status);
         Set_child(bitmap, status, numBit*2+1); //sx
         Set_child(bitmap, status, numBit*2+2); //dx
     }
@@ -155,17 +155,35 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
 
 };
 
-
-
-
-
-
 //! FREE
 //releases allocated memory
 void BuddyAllocator_free(BuddyAllocator *alloc, void *mem){
-  //! DA IMPLEMENTARE
-    }
+  int *p = (int *)mem;
+  int i_0= p[-1];
 
+  //rimettiamo a 0 il bit nella bitmap 
+  Set_child(&alloc->bitmap, 0,i_0);
+  Bitmap_merge(&alloc->bitmap,i_0);
+
+  printf("Bitmap dopo la free:");
+  bitmap_print(&alloc->bitmap);
+}
+//! MERGE
+// funzione ricorsviva di merging fino alla radice
+void Bitmap_merge(BitMap *bitmap, int idx){
+  //siamo alla radice
+  if (idx == 0) return;
+  
+  //merge di blocco idx e di buddy(idx)
+  int buddy_idx = buddyIdx(idx);
+  if (!BitMap_bit(bitmap, buddy_idx)){
+    int parent_idx = parentIdx(idx);
+    BitMap_setBit(bitmap, parent_idx, 0);
+    Bitmap_merge(bitmap, parent_idx);
+  }
+ 
+
+}
 
 
 
