@@ -38,9 +38,10 @@ void bitmap_print(BitMap *bit_map){
     int lev = -1; 
     for (int i = 0; i < bit_map->num_bits; i++){  
         if (bit_left == 0){ //lev terminato
-            if(lev==tot){ 
-              break; //finito 
-            } 
+            if(lev==tot) break; //finito 
+            
+            printf("\n level %d:\t", ++lev);
+            for (int j = 0; j < (1 << tot) - (1 << lev); j++) printf(" "); //stampa spazi
             bit_left = 1 << lev; //ad ogni livello stamo 2^lev
         }
           printf("%d ", BitMap_bit(bit_map, i));
@@ -57,6 +58,7 @@ int BuddyAllocator_init(BuddyAllocator* alloc,
                         int bit_buf_size,
                         int min_bucket_size
 ){
+
   //! To do: add control on sizes -> \\DONE
   if( num_levels>MAX_LEVELS){
     printf("Num di livelli eccessivo\n");
@@ -113,7 +115,8 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
   
 //! case 1: blocco da allocare più grande della memoria disponibile
     if (alloc->buffer_size<size){
-        return NULL;
+      printf("\tMemoria disponibile non sufficiente\n");
+      return NULL;
     }
 //! case 2: memoria disponibile, cerco livello
     int block_lev = alloc->num_levels;
@@ -136,6 +139,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
     }
 //! case 4: non abbiamo blocchi disponibili
     if (freeIdx ==-1){
+       printf("\tNon ci sono blocchi disponibili\n");
        return NULL;
     }
 //! cambio status dei bit associati a genitore e figio
@@ -146,6 +150,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
     ((int*)addr)[0] = freeIdx;
     bitmap_print(&alloc->bitmap);
     //ritorno puntatore al blocco allocato
+    printf("\tallocazione terminata\n");
     return (void *)(addr+sizeof(int));
 
 };
