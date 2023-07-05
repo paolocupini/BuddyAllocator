@@ -37,8 +37,39 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
     if (size==-1) {
+                printf("init...\n");
+        int buddy_init = BuddyAllocator_init(
+            &alloc,
+            levels,
+            buffer,      // buf alloc
+            buf_size,    // dim buf
+            memory,      // buf bitmap
+            MEMORY_SIZE, // dim bitmap
+            min_bucket);
+
+        printf("done..\n");
+
+        if (buddy_init == 0)
+        {
+            printf("error initializing buddy_allocator\n");
+            return 0;
+        }
 
         printf("\nTEST BUDDY_ALLOC\n");
+        void *a1=BuddyAllocator_malloc(&alloc,124);
+        sleep(2);
+        void *a2=BuddyAllocator_malloc(&alloc,124);
+        sleep(2);
+        void *a3=BuddyAllocator_malloc(&alloc,252);
+        sleep(2);
+        void *a5=BuddyAllocator_malloc(&alloc,508);
+        sleep(2);
+        BuddyAllocator_free(&alloc,a5);
+        BuddyAllocator_free(&alloc,a3);
+        BuddyAllocator_free(&alloc,a2);
+        BuddyAllocator_free(&alloc,a1);
+
+        void *a4=BuddyAllocator_malloc(&alloc,1020);
         return 0;
     }
     if (size==-2){

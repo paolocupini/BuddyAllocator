@@ -80,8 +80,8 @@ int BuddyAllocator_init(BuddyAllocator* alloc,
 
 
    printf("BUDDY INITIALIZING\n");
-   printf("\t mem allocator:%d\n",buffer_size);
-   printf("\t used for bitmap:%d\n",num_bits);
+   printf("\tmem allocator:%d\n",buffer_size);
+   printf("\tused for bitmap:%d\n",num_bits);
    printf("\tlevels: %d\n", num_levels);
    printf("\tmin bucket size:%d\n",min_bucket_size);
    printf("\n\n");
@@ -111,9 +111,10 @@ void Set_child(BitMap *bitmap, int status, int numBit){
 
 //! ALLOCAZIONE
 void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
-    printf("\t il blocco da allocare ha dimensione: %d\n",size);
+    
     size+=sizeof(int); // 4 bytes indice della bitmap
-  
+    printf("\n\t ALLOCAZIONE BLOCCO DIM:  %d\n",size);
+
 //! case 1: blocco da allocare più grande della memoria disponibile
     if (alloc->buffer_size<size){
       printf("\tMemoria disponibile non sufficiente\n");
@@ -143,15 +144,17 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
        printf("\tNon ci sono blocchi disponibili\n");
        return NULL;
     }
+    printf("\t\n LIVELLO SCELTO: %d, INDICE: %d\n",block_lev,freeIdx);
 //! cambio status dei bit associati a genitore e figio
     Set_parent(&alloc->bitmap,1, freeIdx);
     Set_child(&alloc->bitmap, 1,freeIdx);
     // puntatore al blocco allocato 
     char *addr = alloc->buffer + offsetIdx(freeIdx)* start_size;
     ((int*)addr)[0] = freeIdx;
+    printf("\tBITMAP DOPO ALLOCAZIONE:\n");
     bitmap_print(&alloc->bitmap);
     //ritorno puntatore al blocco allocato
-    printf("\tallocazione terminata\n");
+    printf("\n\tBLOCCO ALLOCATO\n");
     return (void *)(addr+sizeof(int));
 
 };
