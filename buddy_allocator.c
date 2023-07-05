@@ -59,16 +59,17 @@ int BuddyAllocator_init(BuddyAllocator* alloc,
                         int min_bucket_size
 ){
 
-  //! To do: add control on sizes -> \\DONE
+
   if( num_levels>MAX_LEVELS){
     printf("Num di livelli eccessivo\n");
     return 0;
   }
 
-  if (min_bucket_size<3){
+  if (min_bucket_size<4){
     printf("MinBucket non sufficiente\n");
     return 0;
   }
+
 
   int num_bits=(1<<(num_levels+1)) -1; 
 
