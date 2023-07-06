@@ -158,7 +158,7 @@ void bitmap_print(BitMap *bit_map){
           bit_left--;  //1 bit in meno da stampare
     }
     printf("\n");
-    printf("\n\033[0;35mPERCENTUALE DI MEMORIA OCCUPATA:%.1f%%\033[0m\n",(float)tot_allocated/bit_map->num_bits *100);
+    printf("\n\033[0;35mPERCENTUALE DI BITMAP OCCUPATA:%.1f%%\033[0m\n",(float)tot_allocated/bit_map->num_bits *100);
 
 };
 

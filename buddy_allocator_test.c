@@ -92,14 +92,28 @@ int main(int argc, char **argv)
     }
     if (size==-2){
         
-        printf("TEST MMAP_ALLOC");
+        printf("\n\033[0;35mTESTING MMAP ALLOCATION\033[0m\n\n");
+        
+        void *p1 = mmap_malloc(1000);
+        void *p2 = mmap_malloc(10000);
+        printf("\n");
+        mmap_free(p1);
+        mmap_free(p2);
+        //!TO DO : TEST ERRORI MMAP FREE
+        printf("\n\033[0;35mFACCIO FALLIRE\033[0m\n\n");
+
+        
+
+
+        
+       
+
         return 0;
 
     }
     else if (size + 4 < BUFFER_SIZE / 4)
     {
-
-        printf("init...\n");
+        printf("\n\033[0;35mSMALL REQUEST\033[0m\n\n");
         int buddy_init = BuddyAllocator_init(
             &alloc,
             levels,
@@ -109,7 +123,6 @@ int main(int argc, char **argv)
             MEMORY_SIZE, // dim bitmap
             min_bucket);
 
-        printf("done..\n");
 
         if (buddy_init == 0)
         {
@@ -117,11 +130,14 @@ int main(int argc, char **argv)
             return 0;
         }
         void *p1 = BuddyAllocator_malloc(&alloc, size);
+        sleep(2);
         BuddyAllocator_free(&alloc, p1);
     }
 
     else
     {
+       printf("\n\033[0;35mLARGE REQUEST\033[0m\n\n");
+
         void *p1 = mmap_malloc(size);
         mmap_free(p1);
     }
