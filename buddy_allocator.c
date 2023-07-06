@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <math.h> // for floor and log2
 #include "buddy_allocator.h"
+#include <unistd.h>
 //! debug effects 
 /*
 printf "Colors:\n"
@@ -136,6 +137,7 @@ void bitmap_print(BitMap *bit_map){
     int tot = levelIdx(bit_map->num_bits) - 1;  //numero di livelli totale
     int bit_left = 0; //bit rimasti da stampare per ogni lev
     int lev = -1; 
+    int tot_allocated=0;
     for (int i = 0; i < bit_map->num_bits; i++){  
         if (bit_left == 0){ //lev terminato
             if(lev==tot) break; //finito 
@@ -146,6 +148,7 @@ void bitmap_print(BitMap *bit_map){
         }
           if (BitMap_bit(bit_map, i)==1){
             printf("\033[0;32m%d\033[0m ",BitMap_bit(bit_map,i));
+            tot_allocated++;
 
           }
           else{
@@ -155,6 +158,8 @@ void bitmap_print(BitMap *bit_map){
           bit_left--;  //1 bit in meno da stampare
     }
     printf("\n");
+    printf("\n\033[0;35mPERCENTUALE DI MEMORIA OCCUPATA:%.1f%%\033[0m\n",(float)tot_allocated/bit_map->num_bits *100);
+
 };
 
 int BuddyAllocator_init(BuddyAllocator* alloc,
@@ -280,6 +285,10 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
 //! FREE
 //releases allocated memory
 void BuddyAllocator_free(BuddyAllocator *alloc, void *mem){
+  if (mem==NULL){
+    printf("\n\033[0;31m**************************ERROR: BLOCCO NON ALLOCATO***************************\033[0m\n");
+    return;
+  }
   int *p = (int *)mem;
   int i_0= p[-1];
   

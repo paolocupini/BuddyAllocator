@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "mmap_alloc.h"
 #include "math.h"
+#include <unistd.h>
+
 
 #define BUFFER_SIZE 1024
 #define MEMORY_SIZE 256
@@ -37,7 +39,6 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
     if (size==-1) {
-                printf("init...\n");
         int buddy_init = BuddyAllocator_init(
             &alloc,
             levels,
@@ -47,7 +48,6 @@ int main(int argc, char **argv)
             MEMORY_SIZE, // dim bitmap
             min_bucket);
 
-        printf("done..\n");
 
         if (buddy_init == 0)
         {
@@ -55,8 +55,11 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        printf("\nTEST BUDDY_ALLOC\n");
+        printf("\n\033[0;35mTESTING BUDDY ALLOCATION\033[0m\n\n");
+
+        
         void *a1=BuddyAllocator_malloc(&alloc,124);
+
         void *a2=BuddyAllocator_malloc(&alloc,124);
         void *a3=BuddyAllocator_malloc(&alloc,252);
         void *a5=BuddyAllocator_malloc(&alloc,508);
@@ -66,10 +69,23 @@ int main(int argc, char **argv)
         BuddyAllocator_free(&alloc,a1);
         void *a4=BuddyAllocator_malloc(&alloc,1020);
 
-        //ERRORI 
+
+
+        //ERRORI MALLOC
+        sleep(2);
+        printf("\n\033[0;35mTENTO DI ALLOCARE UNA VOLTA TERMINATI I BLOCCHI\033[0m\n\n");
+
         void *a6=BuddyAllocator_malloc(&alloc,10);
         BuddyAllocator_free(&alloc,a4);
+        sleep(2);
+        printf("\n\033[0;35mTENTO DI ALLOCARE PIù MEMORIA DI QUELLA DISPONIBILE\033[0m\n\n");
+
         void *a7=BuddyAllocator_malloc(&alloc,30000);
+
+        //ERRORI FREE
+        sleep(2);
+        printf("\n\033[0;35mTENTO DI LIBERARE BLOCCO NON ALLOCATO\033[0m\n\n");
+        BuddyAllocator_free(&alloc, a6);
 
 
         return 0;
