@@ -57,19 +57,21 @@ int main(int argc, char **argv)
 
         printf("\nTEST BUDDY_ALLOC\n");
         void *a1=BuddyAllocator_malloc(&alloc,124);
-        sleep(2);
         void *a2=BuddyAllocator_malloc(&alloc,124);
-        sleep(2);
         void *a3=BuddyAllocator_malloc(&alloc,252);
-        sleep(2);
         void *a5=BuddyAllocator_malloc(&alloc,508);
-        sleep(2);
         BuddyAllocator_free(&alloc,a5);
         BuddyAllocator_free(&alloc,a3);
         BuddyAllocator_free(&alloc,a2);
         BuddyAllocator_free(&alloc,a1);
-
         void *a4=BuddyAllocator_malloc(&alloc,1020);
+
+        //ERRORI 
+        void *a6=BuddyAllocator_malloc(&alloc,10);
+        BuddyAllocator_free(&alloc,a4);
+        void *a7=BuddyAllocator_malloc(&alloc,30000);
+
+
         return 0;
     }
     if (size==-2){
