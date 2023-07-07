@@ -44,8 +44,10 @@ void* mmap_malloc(uint64_t size){
 }
 void mmap_free(void* p) {
     //free(NULL) 
-    if (!p)
-      return;
+   if(!p){
+    return;
+   }
+   
     printf("\033[0;34mLIBERO BLOCCO INDIRIZZO: \033[0m");
     printf( "\033[0;33m:%p\033[0m",p);
     

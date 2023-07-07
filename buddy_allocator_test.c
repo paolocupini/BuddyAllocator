@@ -71,21 +71,25 @@ int main(int argc, char **argv)
 
 
 
-        //ERRORI MALLOC
+        //!ERRORI MALLOC
         sleep(2);
         printf("\n\033[0;35mTENTO DI ALLOCARE UNA VOLTA TERMINATI I BLOCCHI\033[0m\n\n");
 
         void *a6=BuddyAllocator_malloc(&alloc,10);
         BuddyAllocator_free(&alloc,a4);
         sleep(2);
-        printf("\n\033[0;35mTENTO DI ALLOCARE PIù MEMORIA DI QUELLA DISPONIBILE\033[0m\n\n");
+        printf("\n\033[0;35mTENTO DI ALLOCARE PIU MEMORIA DI QUELLA DISPONIBILE\033[0m\n\n");
 
         void *a7=BuddyAllocator_malloc(&alloc,30000);
 
-        //ERRORI FREE
+        //!ERRORI FREE
         sleep(2);
         printf("\n\033[0;35mTENTO DI LIBERARE BLOCCO NON ALLOCATO\033[0m\n\n");
         BuddyAllocator_free(&alloc, a6);
+
+        printf("\n\033[0;35mTENTO DI LIBERARE BLOCCO GIA LIBERATO\033[0m\n\n");
+        BuddyAllocator_free(&alloc,a4);
+
 
 
         return 0;
@@ -95,23 +99,19 @@ int main(int argc, char **argv)
         printf("\n\033[0;35mTESTING MMAP ALLOCATION\033[0m\n\n");
         
         void *p1 = mmap_malloc(1000);
-        void *p2 = mmap_malloc(10000);
+        void *p2 = mmap_malloc(100000);
         printf("\n");
         mmap_free(p1);
         mmap_free(p2);
         //!TO DO : TEST ERRORI MMAP FREE
         printf("\n\033[0;35mFACCIO FALLIRE\033[0m\n\n");
-
         
-
-
-        
-       
 
         return 0;
 
     }
-    else if (size + 4 < BUFFER_SIZE / 4)
+    //!SMALL REQ
+    else if (size + 4 <= BUFFER_SIZE)
     {
         printf("\n\033[0;35mSMALL REQUEST\033[0m\n\n");
         int buddy_init = BuddyAllocator_init(
@@ -133,6 +133,7 @@ int main(int argc, char **argv)
         sleep(2);
         BuddyAllocator_free(&alloc, p1);
     }
+    //! LARGE REQ
 
     else
     {

@@ -291,8 +291,13 @@ void BuddyAllocator_free(BuddyAllocator *alloc, void *mem){
   }
   int *p = (int *)mem;
   int i_0= p[-1];
-  
 
+  // evito la free di blocchi già liberati
+  if (BitMap_bit(&alloc->bitmap, i_0)==0){
+    printf("\n\033[0;31m**************************ERROR: BLOCCO GIA LIBERATO***************************\033[0m\n");
+    return;
+  }
+  
   //rimettiamo a 0 il bit nella bitmap 
   Set_child(&alloc->bitmap, 0,i_0);
   Bitmap_merge(&alloc->bitmap,i_0); //riunisco i buddy ricorsivamente
@@ -300,7 +305,7 @@ void BuddyAllocator_free(BuddyAllocator *alloc, void *mem){
   printf("\n\033[0;32mBITMAP DOPO LA FREE\033[0m\n");
   bitmap_print(&alloc->bitmap);
   printf("\n\033[0;32m***********************BLOCCO:%d LIBERATO CON SUCCESSO**********************\033[0m\n",i_0);
-sleep(2);
+  sleep(2);
 }
 //! MERGE
 // funzione ricorsviva di merging fino alla radice
