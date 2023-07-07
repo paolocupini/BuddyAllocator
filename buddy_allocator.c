@@ -147,17 +147,17 @@ void bitmap_print(BitMap *bit_map){
             bit_left = 1 << lev; //ad ogni livello stampo 2^lev
         }
           if (BitMap_bit(bit_map, i)==1){
-            printf("\033[0;32m%d\033[0m ",BitMap_bit(bit_map,i));
+           printf("\033[0;32m%d\033[0m ",BitMap_bit(bit_map,i));
             tot_allocated++;
 
           }
           else{
-            printf("\033[0;34m%d\033[0m ",BitMap_bit(bit_map,i));
+          printf("\033[0;34m%d\033[0m ",BitMap_bit(bit_map,i));
 
           }
           bit_left--;  //1 bit in meno da stampare
     }
-    printf("\n");
+     printf("\n");
     printf("\n\033[0;35mPERCENTUALE DI BITMAP OCCUPATA:%.1f%%\033[0m\n",(float)tot_allocated/bit_map->num_bits *100);
 
 };
@@ -179,7 +179,7 @@ int BuddyAllocator_init(BuddyAllocator* alloc,
     return 0;
   }
 
-  if (min_bucket_size<4){
+  if (min_bucket_size<1){
     printf("MinBucket non sufficiente\n");
     return 0;
   }
@@ -274,7 +274,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size){
     sleep(2);
     printf("\n\033[0;32mBITMAP DOPO ALLOCAZIONE\033[0m\n");
     
-    bitmap_print(&alloc->bitmap);
+     bitmap_print(&alloc->bitmap);
     //ritorno puntatore al blocco allocato
     printf("\n\033[0;32m**********************BLOCCO ALLOCATO CON SUCCESSO**********************\033[0m\n");
     sleep(2);

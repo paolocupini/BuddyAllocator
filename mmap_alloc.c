@@ -56,7 +56,7 @@ void mmap_free(void* p) {
 
       //confronto saved pointer 
         if(*saved!=p1){
-          printf("\nWRONG POINTER\n");
+    printf("\n\033[0;31m*************************ERROR: WRONG POINTER************************\033[0m\n");
           return;
         }
 

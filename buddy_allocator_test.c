@@ -7,7 +7,7 @@
 
 
 #define BUFFER_SIZE 1024
-#define MEMORY_SIZE 256
+#define MEMORY_SIZE (1024)*1024
 #define BUDDY_LEVELS 5
 #define MIN_BUCKET_SIZE (BUFFER_SIZE >>(BUDDY_LEVELS))
 char memory[MEMORY_SIZE];
@@ -105,6 +105,8 @@ int main(int argc, char **argv)
         mmap_free(p2);
         //!TO DO : TEST ERRORI MMAP FREE
         printf("\n\033[0;35mFACCIO FALLIRE\033[0m\n\n");
+        void*p3=mmap_malloc(10);
+        mmap_free(p3+5);
         
 
         return 0;
