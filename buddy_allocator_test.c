@@ -8,8 +8,8 @@
 
 #define BUFFER_SIZE 1024
 #define MEMORY_SIZE (1024)*1024
-#define BUDDY_LEVELS 5
-#define MIN_BUCKET_SIZE (BUFFER_SIZE >>(BUDDY_LEVELS))
+#define BUDDY_LEVELS 4
+#define MIN_BUCKET_SIZE (BUFFER_SIZE >>(BUDDY_LEVELS+1))
 char memory[MEMORY_SIZE];
 
 BuddyAllocator alloc;
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 {
     int buf_size=BUFFER_SIZE;
     int levels=BUDDY_LEVELS;
-    int min_bucket=buf_size>>(levels);
+    int min_bucket=buf_size>>(levels+1);
     char buffer[BUFFER_SIZE];
     
 
