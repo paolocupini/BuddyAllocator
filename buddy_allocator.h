@@ -4,7 +4,7 @@
 
 
 typedef struct {
-    
+  
     int num_levels;
     char *buffer; //memory area to be managed
     int buffer_size;

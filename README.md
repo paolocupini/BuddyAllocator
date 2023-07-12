@@ -3,8 +3,9 @@
 Progetto Sistemi Operativi 2022/23, Prof. Giorgio Grisetti
 
 
-## 1.Spiegazione scopo del progetto
+## 1. Spiegazione scopo del progetto
 Il progetto ha come obiettivo l'implementazione di un allocator di memoria che non faccia uso della malloc. Nello specifico l'allocazione viene gestita in due modi; attraverso un BuddyAllocator per piccole allocazioni e attraverso MMAP. Il BuddyAllocator divide la memoria ricorsivamente, ad ogni ricorsione un blocco genitore viene diviso in due "buddys" figli, finchè non si arriva al punto che un ulteriore ricorsione renderebbe il blocco più piccolo della memoria richiesta. Possiamo vedere il risultato della divisione ricorsiva come un albero binario, possiamo quindi sfruttare le proprietà di relazione dei nodi:
+
 ``` c
 //level of node idx
 int levelIdx(size_t idx){
@@ -33,7 +34,7 @@ int offsetIdx(int idx){
 ```
 
 
-## 2.Scelte implementative e spiegazione funzioni principali
+## 2. Scelte implementative e spiegazione funzioni principali
 
 Il progetto si sviluppa a partire dal codice visto a lezione con la differenza di salvare lo stato dell'albero in una bitmap: ogni blocco è associato ad un bit 1/0 a seconda se sia occupato o no.
 
@@ -43,26 +44,28 @@ Abbiamo già visto a lezione le funzioni implementate nel file 'bit_map.c', con 
 
 La struct `BuddyAllocator` salva le informazioni per la gestione della bitmap, come il numero di livelli dell'albero, la minima dimensione di un blocco e inoltre le informazioni riguardanti la quantità di memoria che può essere gestita.
 
-1. La funzione `BuddyAllocator_malloc`ha il seguente comportamento: controlla se la memoria disponibile è sufficiente per soddisfare la richiesta,  ricerca il livello in cui allocare la memoria partendo dal livello più in basso, itera sui blocchi del livello trovato alla ricerca del blocco libero. Una volta trovato il blocco modifica lo stato del bit del blocco selezionato e dei nodi genitori fino alla radice attraverso le funzioni 'Set_parent' e 'Set_child'.  
+1. La funzione `BuddyAllocator_malloc`ha il seguente comportamento: controlla se la memoria disponibile è sufficiente per soddisfare la richiesta,  ricerca il livello in cui allocare la memoria partendo dal livello più in basso, itera sui blocchi del livello trovato alla ricerca del blocco libero. Una volta trovato il blocco modifica lo stato del bit del blocco selezionato e dei nodi genitori fino alla radice attraverso le funzioni `Set_parent` e `Set_child`.  
 
 2. La funzione `BuddyAllocator_free`: non fa altro che controllare che l'indirizzo passato corrisponda ad un blocco allocato in precedenza e nel caso cambia il bit corrispondente nella Bitmap. 
 
 3. La funzione `Bitmap_merge` ricompatta i blocchi, riunendo ricorsivamente i due buddys con il nodo genitore fino alla radice.
 
-## 3.Come eseguire
+## 3. Come eseguire
 
 ```console
-
+paolocupini@def:~$ git clone https://github.com/paolocupini/SO-project.git
 paolocupini@def:~$ make
 paolocupini@def:~$ ./buddy_allocator_test "x"
 
 
 ```
-Dove la variabile "x" può assumere i seguenti valori: 
-1. x=-1 -> esegue tutti i test relativi ad allocazioni con BuddyAllocator
-2. x=-2 -> esegue tutti i test relativi ad allocazioni con mmap
-3. x>0 -> gestisce l'allocazione in due modi: tramite BuddyAllocator se x<1024, altrimenti con mmap.
-## 4.Spiegazione test 
+Dove la variabile `x` può assumere i seguenti valori: 
+1. `x=-1`-> esegue tutti i test relativi ad allocazioni con BuddyAllocator
+2. `x=-2` -> esegue tutti i test relativi ad allocazioni con mmap
+3. `x>0` -> gestisce l'allocazione in due modi: tramite BuddyAllocator se x<1024, altrimenti con mmap.
 
-Per visualizzare meglio le allocazioni e deallocazioni viene testato un buddyallocator con 5 livelli, 
+## 4. Spiegazione testing
+
+Per visualizzare meglio le allocazioni e deallocazioni viene testato un BuddyAllocator con 5 livelli, in questo caso la dimensione minima di un bucket sarà 1024/2^5 = 32 , che ovviamente comporta frammentazione. Per diminuire la dimensione dei blocchi a 2 basta scambiare il numero di livelli da 6 a 9 nel file `buddy_allocator_test.c`.
+
 

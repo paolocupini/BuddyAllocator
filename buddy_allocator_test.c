@@ -8,8 +8,8 @@
 
 #define BUFFER_SIZE 1024
 #define MEMORY_SIZE (1024)*1024
-#define BUDDY_LEVELS 4
-#define MIN_BUCKET_SIZE (BUFFER_SIZE >>(BUDDY_LEVELS+1))
+#define BUDDY_LEVELS 5 //9 per avere blocchi dim 2
+#define MIN_BUCKET_SIZE (BUFFER_SIZE >>(BUDDY_LEVELS))
 char memory[MEMORY_SIZE];
 
 BuddyAllocator alloc;
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 {
     int buf_size=BUFFER_SIZE;
     int levels=BUDDY_LEVELS;
-    int min_bucket=buf_size>>(levels+1);
+    int min_bucket=buf_size>>(levels);
     char buffer[BUFFER_SIZE];
     
 
@@ -29,13 +29,13 @@ int main(int argc, char **argv)
         size = atoi(argv[1]);
         if (size < -2 || size==0)
         {
-            printf("\nERROR\nINSERISCI SIZE BLOCCO DA ALLOCARE > 0 \n INSERISCI -1 PER ESEGUIRE TEST BUDDY_ALLOC\n INSERISCI -2 PER ESEGUIRE TEST MMAP_ALLOC\n");
+            printf("\n\033[0;31m\nINSERISCI SIZE BLOCCO DA ALLOCARE > 0 \n INSERISCI -1 PER ESEGUIRE TEST BUDDY_ALLOC\n INSERISCI -2 PER ESEGUIRE TEST MMAP_ALLOC\n\033[0m\n");
             exit(EXIT_FAILURE);
         }
     }
     else
     {
-        printf("\nERROR\n INSERISCI SIZE BLOCCO DA ALLOCARE > 0 \n INSERISCI -1 PER ESEGUIRE TEST BUDDY_ALLOC\n INSERISCI -2 PER ESEGUIRE TEST MMAP_ALLOC\n");
+            printf("\n\033[0;31m\nINSERISCI SIZE BLOCCO DA ALLOCARE > 0 \n INSERISCI -1 PER ESEGUIRE TEST BUDDY_ALLOC\n INSERISCI -2 PER ESEGUIRE TEST MMAP_ALLOC\n\033[0m\n");
         exit(EXIT_FAILURE);
     }
     if (size==-1) {
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         printf("\n\033[0;35mTESTING BUDDY ALLOCATION\033[0m\n\n");
 
         
-        void *a1=BuddyAllocator_malloc(&alloc,124);
+  void *a1=BuddyAllocator_malloc(&alloc,124);
 
         void *a2=BuddyAllocator_malloc(&alloc,124);
         void *a3=BuddyAllocator_malloc(&alloc,252);
@@ -86,7 +86,9 @@ int main(int argc, char **argv)
         sleep(2);
         printf("\n\033[0;35mTENTO DI LIBERARE BLOCCO NON ALLOCATO\033[0m\n\n");
         BuddyAllocator_free(&alloc, a6);
+        BuddyAllocator_free(&alloc, a7);
 
+        sleep(2);
         printf("\n\033[0;35mTENTO DI LIBERARE BLOCCO GIA LIBERATO\033[0m\n\n");
         BuddyAllocator_free(&alloc,a4);
 
@@ -99,12 +101,17 @@ int main(int argc, char **argv)
         printf("\n\033[0;35mTESTING MMAP ALLOCATION\033[0m\n\n");
         
         void *p1 = mmap_malloc(1000);
+        sleep(2);
         void *p2 = mmap_malloc(100000);
+        sleep(2);
         printf("\n");
         mmap_free(p1);
+        sleep(2);
         mmap_free(p2);
+        sleep(2);
         //!TO DO : TEST ERRORI MMAP FREE
         printf("\n\033[0;35mFACCIO FALLIRE\033[0m\n\n");
+        sleep(2);
         void*p3=mmap_malloc(10);
         mmap_free(p3+5);
         
@@ -140,8 +147,8 @@ int main(int argc, char **argv)
     else
     {
        printf("\n\033[0;35mLARGE REQUEST\033[0m\n\n");
-
         void *p1 = mmap_malloc(size);
+        sleep(2);
         mmap_free(p1);
     }
 

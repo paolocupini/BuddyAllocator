@@ -17,6 +17,8 @@ void* mmap_malloc(uint64_t size){
     close(fd);
     */
     //Anonymous mappings are better for large allocations because they do not pin down the heap with chunks of memory, which would make fragmentation more likely. -> thx stackoverflow
+   
+   //8 puntatore + 8 dim memoria
     char* map=(char*) mmap(0, size+16,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
    
     if(map == MAP_FAILED){
@@ -34,9 +36,7 @@ void* mmap_malloc(uint64_t size){
     *backup=size+16;
 
     printf("\033[32;1m...MAPPED CORRECTLY...\033[0m");
-
     printf( "\033[0;33m:%p\033[0m\n",map+16);
-
 
     return map+16;
 
@@ -56,7 +56,7 @@ void mmap_free(void* p) {
 
       //confronto saved pointer 
         if(*saved!=p1){
-    printf("\n\033[0;31m*************************ERROR: WRONG POINTER************************\033[0m\n");
+        printf("\n\033[0;31m*************************ERROR: WRONG POINTER************************\033[0m\n");
           return;
         }
 
