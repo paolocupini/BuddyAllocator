@@ -3,8 +3,9 @@
 Progetto Sistemi Operativi 2022/23, Prof. Giorgio Grisetti
 
 
-## 1. Spiegazione scopo del progetto
-Il progetto ha come obiettivo l'implementazione di un allocator di memoria che non faccia uso della malloc. Nello specifico l'allocazione viene gestita in due modi; attraverso un BuddyAllocator per piccole allocazioni e attraverso MMAP. Il BuddyAllocator divide la memoria ricorsivamente, ad ogni ricorsione un blocco genitore viene diviso in due "buddys" figli, finchè non si arriva al punto che un ulteriore ricorsione renderebbe il blocco più piccolo della memoria richiesta. Possiamo vedere il risultato della divisione ricorsiva come un albero binario, possiamo quindi sfruttare le proprietà di relazione dei nodi:
+## 1. Project's Purpose
+
+The purpose of the project is to implement a memory allocator that does not use malloc. Specifically, memory allocation is managed in two ways: through a BuddyAllocator for small allocations and through MMAP. The BuddyAllocator divides memory recursively, with each recursion splitting a parent block into two "buddy" children until further recursion would make the block smaller than the required memory. We can visualize the result of this recursive division as a binary tree, and we can leverage the properties of the node relationships.
 
 ``` c
 //level of node idx
@@ -34,23 +35,32 @@ int offsetIdx(int idx){
 ```
 
 
-## 2. Scelte implementative e spiegazione funzioni principali
+## 2. Implementation Choices and Explanation of Main Functions:
 
-Il progetto si sviluppa a partire dal codice visto a lezione con la differenza di salvare lo stato dell'albero in una bitmap: ogni blocco è associato ad un bit 1/0 a seconda se sia occupato o no.
+The project builds upon the code covered in the lecture, with the key difference being the use of a bitmap to store the state of the memory allocation. Each block is associated with a bit (1 or 0) to indicate whether it is allocated or free.
 
-La struct `BitMap` conserva un buffer di memoria con la relativa dimensione e il numero di bit che può contenere corrispondenti al numero di nodi dell'albero. 
+The BitMap struct holds a memory buffer with a corresponding size and the number of bits it can contain, matching the number of nodes in the tree.
 
-Abbiamo già visto a lezione le funzioni implementate nel file 'bit_map.c', con lo scopo inizialiazzare la bitmap e interrogare/settare il contenuto dei bit.
+You have already learned about the functions implemented in the 'bit_map.c' file, which are used to initialize the bitmap and query/set the bit values.
 
-La struct `BuddyAllocator` salva le informazioni per la gestione della bitmap, come il numero di livelli dell'albero, la minima dimensione di un blocco e inoltre le informazioni riguardanti la quantità di memoria che può essere gestita.
+The BuddyAllocator struct stores information for managing the bitmap, including the number of tree levels, the minimum block size, and details about the amount of memory that can be managed.
 
-1. La funzione `BuddyAllocator_malloc`ha il seguente comportamento: controlla se la memoria disponibile è sufficiente per soddisfare la richiesta,  ricerca il livello in cui allocare la memoria partendo dal livello più in basso, itera sui blocchi del livello trovato alla ricerca del blocco libero. Una volta trovato il blocco modifica lo stato del bit del blocco selezionato e dei nodi genitori fino alla radice attraverso le funzioni `Set_parent` e `Set_child`.  
+1. BuddyAllocator_malloc Function:
 
-2. La funzione `BuddyAllocator_free`: non fa altro che controllare che l'indirizzo passato corrisponda ad un blocco allocato in precedenza e nel caso cambia il bit corrispondente nella Bitmap. 
+Purpose: This function checks if there is sufficient available memory to satisfy the allocation request. It searches for the level at which to allocate memory, starting from the lowest level and iterating through the blocks at that level to find a free block. Once a free block is located, it changes the bit state of the selected block and its parent nodes up to the root using the Set_parent and Set_child functions.
+Explanation: BuddyAllocator_malloc efficiently manages memory allocation by dividing memory into buddy blocks and recursively searching for an appropriate free block. When a suitable block is found, it updates the bitmap and maintains the tree structure.
 
-3. La funzione `Bitmap_merge` ricompatta i blocchi, riunendo ricorsivamente i due buddys con il nodo genitore fino alla radice.
+2. BuddyAllocator_free Function:
 
-## 3. Come eseguire
+Purpose: This function checks whether the provided address corresponds to a previously allocated block. If it does, the function changes the corresponding bit in the bitmap to mark the block as free.
+Explanation: BuddyAllocator_free ensures that only valid allocated memory is released, and it updates the bitmap to reflect the freed block.
+
+3. Bitmap_merge Function:
+
+Purpose: This function compacts memory blocks by recursively merging two buddy blocks with their parent node until reaching the root.
+Explanation: Bitmap_merge recursively checks and merges buddy blocks and their parent nodes. This operation helps maintain memory efficiency and prevents fragmentation.
+
+## 3. How to run
 
 ```console
 paolocupini@def:~$ git clone https://github.com/paolocupini/SO-project.git
@@ -59,13 +69,16 @@ paolocupini@def:~$ ./buddy_allocator_test "x"
 
 
 ```
-Dove la variabile `x` può assumere i seguenti valori: 
-1. `x=-1`-> esegue tutti i test relativi ad allocazioni con BuddyAllocator
-2. `x=-2` -> esegue tutti i test relativi ad allocazioni con mmap
-3. `x>0` -> gestisce l'allocazione in due modi: tramite BuddyAllocator se x<1024, altrimenti con mmap.
+Where the variable x can take the following values:
 
-## 4. Spiegazione testing
+1. x=-1 -> It runs all tests related to allocations using BuddyAllocator.
+2. x=-2 -> It runs all tests related to allocations using mmap.
+3. x>0 -> It manages allocation in two ways: through BuddyAllocator if x is less than 1024, otherwise using mmap.
 
-Per visualizzare meglio le allocazioni e deallocazioni viene testato un BuddyAllocator con 5 livelli, in questo caso la dimensione minima di un bucket sarà 1024/2^5 = 32 , che ovviamente comporta frammentazione. Per diminuire la dimensione dei blocchi a 2 basta scambiare il numero di livelli da 6 a 9 nel file `buddy_allocator_test.c`.
+
+## 4. Explanation of Testing:
+To better visualize allocations and deallocations, a BuddyAllocator with 5 levels is tested. In this case, the minimum size of a bucket will be 1024/2^5 = 32, which, of course, leads to fragmentation. To reduce the block size to 2, you can simply change the number of levels from 6 to 9 in the 'buddy_allocator_test.c' file.
+
+
 
 
